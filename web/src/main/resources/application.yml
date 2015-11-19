@@ -1,0 +1,22 @@
+server:
+  port: 8090
+
+lowres:
+  queueName: lowres
+
+highres:
+  queueName: highres
+
+thumbnail:
+  queueName: thumbnail
+
+sqs:
+  regionName: us-east-1
+
+s3:
+  bucket: geekoosh-aws-sqs
+  workingFolder: /tmp
+
+multipart:
+  maxFileSize: 2000KB
+  maxRequestSize: 2000KB

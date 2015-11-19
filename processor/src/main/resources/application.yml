@@ -1,0 +1,25 @@
+s3:
+  bucket: geekoosh-aws-sqs
+  workingFolder: /tmp
+
+sqs:
+  regionName: us-east-1
+
+ffmpeg:
+  ffmpegPath: /usr/local/bin/ffmpeg
+  workingFolder: /tmp
+
+lowres:
+  queueName: lowres
+
+highres:
+  queueName: highres
+
+thumbnail:
+  queueName: thumbnail
+
+queues:
+  names:
+    - lowres
+    - highres
+    - thumbnail
