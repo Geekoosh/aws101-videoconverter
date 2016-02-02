@@ -2,6 +2,7 @@ package com.geekoosh.aws.video.services.sqs.video;
 
 import com.geekoosh.aws.video.services.file.FileService;
 import com.geekoosh.aws.video.services.sqs.QueueManager;
+import com.geekoosh.aws.video.services.video.ControlJobService;
 import com.geekoosh.aws.video.services.video.VideoConverter;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ public abstract class QueueManagerConverter extends QueueManager {
             input = fileService.downloadTemp(videoConverterMessage.getInput());
             output = convert(input);
             fileService.upload(output, videoConverterMessage.getOutput(), videoConverterMessage.isPublic());
+            ack(videoConverterMessage);
         } catch(Exception e) {
             e.printStackTrace();
         } finally {
@@ -47,4 +49,5 @@ public abstract class QueueManagerConverter extends QueueManager {
     }
 
     abstract String convert(String input) throws Exception;
+    abstract void ack(VideoConverterMessage msg) throws Exception;
 }

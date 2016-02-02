@@ -9,43 +9,22 @@
     <meta name="viewport" content="width=device-width"/>
 
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,600,800' rel='stylesheet' type='text/css'/>
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"/>
 
-    <script>
-        function uploadFile() {
-            var form = document.getElementById('file-form');
-            var fileSelect = document.getElementById('file');
-            var uploadButton = document.getElementById('upload-button');
+    <script src=="/upload.js"/>
 
-            form.onsubmit = function(event) {
-                event.preventDefault();
-                var files = fileSelect.files;
-                var formData = new FormData();
-                formData.append('file', files[0], files[0].name);
-
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '/', true);
-
-                xhr.onload = function () {
-                  if (xhr.status === 200) {
-                    // File(s) uploaded.
-                    uploadButton.innerHTML = 'Upload';
-                  } else {
-                    alert('An error occurred!');
-                  }
-                };
-
-                xhr.send(formData);
-            }
-        }
     </script>
 </head>
 <body onload="uploadFile()">
 <div class="page-header"></div>
 <div class="container">
-    <form id="file-form" method="post" action="/" enctype="multipart/form-data">
+    <form id="file-form" enctype="multipart/form-data">
         <input id="file" name="file" type="file"/>
         <input id="upload-button" type="submit" value="Upload"/>
     </form>
+    <img id="thumbnail"/>
+    <video id="highres"></video>
+    <video id="lowres"></video>
 </div>
 </body>
 </html>

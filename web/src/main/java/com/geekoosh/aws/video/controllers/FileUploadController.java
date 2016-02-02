@@ -1,16 +1,15 @@
 package com.geekoosh.aws.video.controllers;
 
+import com.geekoosh.aws.video.model.ConvertJob;
 import com.geekoosh.aws.video.services.file.FileService;
 import com.geekoosh.aws.video.services.sqs.video.QueuePublisherHighRes;
 import com.geekoosh.aws.video.services.sqs.video.QueuePublisherLowRes;
 import com.geekoosh.aws.video.services.sqs.video.QueuePublisherThumbnail;
 import com.geekoosh.aws.video.services.sqs.video.VideoConverterMessage;
+import com.geekoosh.aws.video.services.video.ControlJobService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -30,9 +29,17 @@ public class FileUploadController {
     @Autowired
     private QueuePublisherThumbnail thumbnail;
 
+    @Autowired
+    private ControlJobService controlJobService;
+
     @RequestMapping(value="/", method= RequestMethod.GET)
     public String home() {
         return "index";
+    }
+
+    @RequestMapping(value="/poll/{id}", method= RequestMethod.GET)
+    public @ResponseBody ConvertJob poll(@PathVariable("id")Long id) {
+        return controlJobService.getById(id);
     }
 
     @RequestMapping(value="/", method= RequestMethod.POST)
@@ -45,10 +52,12 @@ public class FileUploadController {
                 fileService.upload(strm, baseName, true);
                 strm.close();
 
-                //TODO: Add to db and return token
+                //Add to db and return token
+                ConvertJob convertJob = controlJobService.createConvertJob(baseName);
 
-                //TODO: Send to queues
+                //Send to queues
                 VideoConverterMessage message = new VideoConverterMessage();
+                message.setConvertJobId(convertJob.getId());
                 message.setInput(baseName);
                 message.setOutput(baseName + ".png");
                 message.setPublic(true);
@@ -60,7 +69,7 @@ public class FileUploadController {
                 message.setOutput(baseName + "_lowres.mp4");
                 lowRes.publish(message);
 
-                return baseName;
+                return convertJob.getId().toString();
             } catch (Exception e) {
                 e.printStackTrace();
                 return "failed";

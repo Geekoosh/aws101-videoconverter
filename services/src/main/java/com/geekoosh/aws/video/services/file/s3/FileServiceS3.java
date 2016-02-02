@@ -11,11 +11,13 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.geekoosh.aws.video.services.file.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 
 @Service
+@Profile("!local")
 public class FileServiceS3 implements FileService {
     @Autowired
     private S3Config s3Config;
